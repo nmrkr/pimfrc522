@@ -1,17 +1,11 @@
 #include "Arduino.h"
 
-#define SPI_CHANNEL 0
-
 #define MSBFIRST 0
 #define SPI_MODE0 0
 
 struct SPISettings
 {
-    SPISettings(unsigned speed, unsigned order, unsigned mode)
-        : speed{speed}
-        , order{order}
-        , mode{mode}
-    {}
+    SPISettings(unsigned speed, unsigned order, unsigned mode);
 
     unsigned speed;
     unsigned order;
@@ -22,25 +16,12 @@ struct SPISettings
 struct SPIAdapter
 {
     int handle;
+    int spiChannel{0};
 
-    void beginTransaction(SPISettings settings)
-    {
-        handle = spi_open(adaptor_state.handle, SPI_CHANNEL, settings.speed, settings.order | settings.mode);
-    }
+    void beginTransaction(SPISettings settings);
+    void endTransaction();
 
-    void endTransaction()
-    {
-        spi_close(adaptor_state.handle, handle);
-    }
-
-    byte transfer(uint8_t data)
-    {
-        byte result{0};
-        auto rx = reinterpret_cast<char*>(&result);
-        auto tx = reinterpret_cast<char*>(&data);
-        spi_xfer(adaptor_state.handle, handle, tx, rx, 1U);
-        return result;
-    }
+    byte transfer(uint8_t data);
 };
 
 static SPIAdapter SPI;

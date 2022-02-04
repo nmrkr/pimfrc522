@@ -33,13 +33,7 @@ struct adaptor_state_t
     const int handle;
     const std::chrono::time_point<std::chrono::steady_clock> start;
 
-    adaptor_state_t()
-        : handle{pigpio_start(nullptr, nullptr)}
-        , start{std::chrono::steady_clock::now()}
-    {
-        if (handle < 0)
-            std::cerr << "SPIAdapter failed to connect to pigpiod." << std::endl;
-    }
+    adaptor_state_t();
 
 } adaptor_state;
 
@@ -57,7 +51,7 @@ struct serial_t
     {
         std::ios current{nullptr};
         current.copyfmt(std::cout);
-        std::cout << (hex ? std::hex : std::dec) << value;
+        std::cout << (hex ? std::hex : std::dec) << +value;
         std::cout.copyfmt(current);
     }
 
@@ -75,54 +69,19 @@ struct serial_t
         println();
     }
 
-    void println()
-    {
-        std::cout << std::endl;
-    }
+    void println();
 } Serial;
 
-void pinMode(byte pin, byte mode)
-{
-    set_mode(adaptor_state.handle, pin, mode);
-}
+void pinMode(byte pin, byte mode);
+int digitalRead(byte pin);
+void digitalWrite(byte pin, byte level);
 
-int digitalRead(byte pin)
-{
-    return gpio_read(adaptor_state.handle, pin);
-}
+long millis();
+void delay(unsigned ms);
+void delayMicroseconds(unsigned us);
 
-void digitalWrite(byte pin, byte level)
-{
-    gpio_write(adaptor_state.handle, pin, level);
-}
+void yield();
 
-long millis()
-{
-    using namespace std::chrono;
-    const auto span = steady_clock::now() - adaptor_state.start;
-    return duration_cast<milliseconds>(span).count();
-}
-
-void delay(unsigned ms)
-{
-    using namespace std::chrono;
-    std::this_thread::sleep_for(milliseconds(ms));
-}
-
-void delayMicroseconds(unsigned us)
-{
-    using namespace std::chrono;
-    std::this_thread::sleep_for(microseconds(us));
-}
-
-void yield()
-{
-    std::this_thread::yield();
-}
-
-byte pgm_read_byte(const byte* addr)
-{
-    return *addr;
-}
+byte pgm_read_byte(const byte* addr);
 
 #endif
