@@ -12,8 +12,8 @@ struct SPISettings
     unsigned mode;
 };
 
-
-struct SPIAdapter
+static
+struct SPIAdaptor
 {
     int handle;
     int spiChannel{0};
@@ -21,7 +21,5 @@ struct SPIAdapter
     void beginTransaction(SPISettings settings);
     void endTransaction();
 
-    byte transfer(uint8_t data);
-};
-
-static SPIAdapter SPI;
+    byte transfer(byte data);
+} SPI;

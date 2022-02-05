@@ -6,17 +6,19 @@ SPISettings::SPISettings(unsigned speed, unsigned order, unsigned mode)
     , mode{mode}
 {}
 
-void SPIAdapter::beginTransaction(SPISettings settings)
+void SPIAdaptor::beginTransaction(SPISettings settings)
 {
     handle = spi_open(adaptor_state.handle, spiChannel, settings.speed, settings.order | settings.mode);
+    if (handle < 0)
+        std::cerr << "Arduino adaptor: Error opening SPI channel." << std::endl;
 }
 
-void SPIAdapter::endTransaction()
+void SPIAdaptor::endTransaction()
 {
     spi_close(adaptor_state.handle, handle);
 }
 
-byte SPIAdapter::transfer(uint8_t data)
+byte SPIAdaptor::transfer(byte data)
 {
     byte result{0};
     auto rx = reinterpret_cast<char*>(&result);

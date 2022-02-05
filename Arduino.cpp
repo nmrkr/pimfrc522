@@ -5,7 +5,7 @@ adaptor_state_t::adaptor_state_t()
     , start{std::chrono::steady_clock::now()}
 {
     if (handle < 0)
-        std::cerr << "SPIAdapter failed to connect to pigpiod." << std::endl;
+        std::cerr << "Arduino adaptor: Error connecting to pigpiod." << std::endl;
 }
 
 void serial_t::println()
